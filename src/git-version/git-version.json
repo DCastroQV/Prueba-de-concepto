@@ -1,10 +1,10 @@
 {
-  "dirty": false,
-  "raw": "6c19bec",
-  "hash": "6c19bec",
+  "dirty": true,
+  "raw": "3d901db-dirty",
+  "hash": "3d901db",
   "distance": null,
   "tag": null,
   "semver": null,
-  "suffix": "6c19bec",
+  "suffix": "3d901db-dirty",
   "semverString": null
 }
