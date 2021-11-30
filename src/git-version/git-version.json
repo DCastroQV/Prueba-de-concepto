@@ -1,0 +1,25 @@
+{
+  "dirty": true,
+  "raw": "v0.5.0-stg-0-g201f089-dirty",
+  "hash": "g201f089",
+  "distance": 0,
+  "tag": "v1.3.0-stg+RQ03",
+  "semver": {
+    "options": {
+      "loose": false,
+      "includePrerelease": false
+    },
+    "loose": false,
+    "raw": "v0.5.0-stg",
+    "major": 0,
+    "minor": 5,
+    "patch": 0,
+    "prerelease": [
+      "stg"
+    ],
+    "build": [],
+    "version": "0.5.0-stg"
+  },
+  "suffix": "0-g201f089-dirty",
+  "semverString": "0.5.0-stg+0.g201f089.dirty"
+}
