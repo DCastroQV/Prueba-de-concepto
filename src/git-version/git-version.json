@@ -1,8 +1,8 @@
 {
   "dirty": true,
-  "raw": "v0.5.0-stg-0-g201f089-dirty",
-  "hash": "g201f089",
-  "distance": 0,
+  "raw": "v1.3.0-stg+RQ03-7-gf5f6d19-dirty",
+  "hash": "gf5f6d19",
+  "distance": 7,
   "tag": "v1.3.0-stg+RQ03",
   "semver": {
     "options": {
@@ -10,16 +10,18 @@
       "includePrerelease": false
     },
     "loose": false,
-    "raw": "v0.5.0-stg",
-    "major": 0,
-    "minor": 5,
+    "raw": "v1.3.0-stg+RQ03",
+    "major": 1,
+    "minor": 3,
     "patch": 0,
     "prerelease": [
       "stg"
     ],
-    "build": [],
-    "version": "0.5.0-stg"
+    "build": [
+      "RQ03"
+    ],
+    "version": "1.3.0-stg"
   },
-  "suffix": "0-g201f089-dirty",
-  "semverString": "0.5.0-stg+0.g201f089.dirty"
+  "suffix": "7-gf5f6d19-dirty",
+  "semverString": "1.3.0-stg+7.gf5f6d19.dirty"
 }

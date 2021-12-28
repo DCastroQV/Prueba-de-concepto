@@ -22,13 +22,35 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('build') {
+            agent {
+                label 'Linux'
+            }
             when {
                 expression { BRANCH_NAME ==~ /(master|stage|REL-CL\d)/ }
             }
             steps {
                 script{
-                    echo "Bransh Name $BRANCH_NAME"
+                    sh """
+                        docker run --rm -v \$(pwd):/app -w /app node:17 npm install
+                        docker run --rm -v \$(pwd):/app -w /app node:17 npm run-script build
+                    """
+                    stash includes: 'dist/app-qv-devops', name: 'app'
+                }
+            }
+        }
+        stage('deploy') {
+            agent {
+                label 'Linux'
+            }
+            steps {
+                script{
+                    unstash 'app'
+
+                    sh"""
+                        mv app/* ../prueba-concepto/cel1
+                    """
+                    
                 }
             }
         }
