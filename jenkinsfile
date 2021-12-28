@@ -4,7 +4,31 @@ pipeline {
         stage('test') {
             steps {
                 script{
-                    echo "Hola mundo"
+                    echo "Stage Test"
+                }
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                script{
+                    echo "Stage SonarQube analysis"
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                script{
+                    echo "Stage Quality gate"
+                }
+            }
+        }
+        stage('deploy') {
+            when {
+                expression { BRANCH_NAME ==~ /(master|stage|REL-CL\d)/ }
+            }
+            steps {
+                script{
+                    echo "Bransh Name $BRANCH_NAME"
                 }
             }
         }
