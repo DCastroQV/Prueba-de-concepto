@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { versionInfo } from 'src/git-version/version-info';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app-qv-devops';
+
+  public version: string;
+
+  constructor(){
+    this.version = versionInfo.tag == null ? versionInfo.hash : versionInfo.tag
+  }
 }

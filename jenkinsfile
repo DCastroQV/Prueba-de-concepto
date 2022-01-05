@@ -4,9 +4,68 @@ pipeline {
         stage('test') {
             steps {
                 script{
-                    echo "Hola mundo"
+                    echo "Stage Test"
                 }
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                script{
+                    echo "Stage SonarQube analysis"
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                script{
+                    echo "Stage Quality gate"
+                }
+            }
+        }
+        stage('build and Deploy') {
+            agent {
+                label 'Linux'
+            }
+            when {
+                expression { BRANCH_NAME ==~ /(master|stage|REL-CL\d-.*)/ }
+            }
+            steps {
+                script{
+                    def buildFolder; 
+                    if ("master" in BRANCH_NAME || "stage" in BRANCH_NAME){
+                        buildFolder = BRANCH_NAME;
+                    } else if (BRANCH_NAME.contains("CL1")) {
+                        buildFolder = "CL1";
+                    }else if (BRANCH_NAME.contains("CL2")) {
+                        buildFolder = "CL2";
+                    } else if (BRANCH_NAME.contains("CL3")) {
+                        buildFolder = "CL3";
+                    }
+
+                    sh """
+                        docker run --rm -v \$(pwd):/app -w /app node:17 npm install
+                        docker run --rm -v \$(pwd):/app -w /app node:17 npm run-script build
+                        
+                        cp -rf  dist/app-qv-devops/* ../prueba_concepto/$buildFolder
+                        cp .htaccess ../prueba_concepto/$buildFolder
+                    """
+                    // stash includes: 'dist/app-qv-devops/*', name: 'app'
+                }
+            }
+        }
+        // stage('deploy') {
+        //     agent {
+        //         label 'Linux'
+        //     }
+        //     steps {
+        //         script{
+
+        //             sh"""
+        //                 ls
+        //             """
+                    
+        //         }
+        //     }
+        // }
     }
 }
