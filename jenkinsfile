@@ -22,7 +22,7 @@ pipeline {
                 }
             }
         }
-        stage('build') {
+        stage('build and Deploy') {
             agent {
                 label 'Linux'
             }
@@ -31,28 +31,40 @@ pipeline {
             }
             steps {
                 script{
+                    def buildFolder; 
+                    if ("master" in BRANCH_NAME || "stage" in BRANCH_NAME){
+                        buildFolder = BRANCH_NAME;
+                    } else if ("CL1" in BRANCH_NAME) {
+                        buildFolder = "CL1";
+                    }else if ("CL2" in BRANCH_NAME) {
+                        buildFolder = "CL2";
+                    } else if ("CL3" in BRANCH_NAME) {
+                        buildFolder = "CL3";
+                    }
+
                     sh """
                         docker run --rm -v \$(pwd):/app -w /app node:17 npm install
                         docker run --rm -v \$(pwd):/app -w /app node:17 npm run-script build
+                        
+                        cp -rf  dist/app-qv-devops/* ../prueba_concepto/$buildFolder
                     """
-                    stash includes: 'dist/app-qv-devops', name: 'app'
+                    // stash includes: 'dist/app-qv-devops/*', name: 'app'
                 }
             }
         }
-        stage('deploy') {
-            agent {
-                label 'Linux'
-            }
-            steps {
-                script{
-                    unstash 'app'
+        // stage('deploy') {
+        //     agent {
+        //         label 'Linux'
+        //     }
+        //     steps {
+        //         script{
 
-                    sh"""
-                        mv app/* ../prueba-concepto/cel1
-                    """
+        //             sh"""
+        //                 ls
+        //             """
                     
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
     }
 }
