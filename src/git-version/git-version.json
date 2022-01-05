@@ -1,8 +1,8 @@
 {
-  "dirty": true,
-  "raw": "v1.3.0-stg+RQ03-7-g51851cd-dirty",
-  "hash": "g51851cd",
-  "distance": 7,
+  "dirty": false,
+  "raw": "v1.3.0-stg+RQ03-9-g58362f2",
+  "hash": "g58362f2",
+  "distance": 9,
   "tag": "v1.3.0-stg+RQ03",
   "semver": {
     "options": {
@@ -22,6 +22,6 @@
     ],
     "version": "1.3.0-stg"
   },
-  "suffix": "7-g51851cd-dirty",
-  "semverString": "1.3.0-stg+7.g51851cd.dirty"
+  "suffix": "9-g58362f2",
+  "semverString": "1.3.0-stg+9.g58362f2"
 }
