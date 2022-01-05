@@ -1,0 +1,20 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+RewriteCond %{Request_URI} ^/(CL1).*
+RewriteRule ^(.*) /CL1/index.html [NC,L]
+
+RewriteCond %{Request_URI} ^/(CL2).*
+RewriteRule ^(.*) /CL2/index.html [NC,L]
+
+RewriteCond %{Request_URI} ^/(CL3).*
+RewriteRule ^(.*) /CL3/index.html [NC,L]
+
+RewriteCond %{Request_URI} ^/(stage).*
+RewriteRule ^(.*) /stage/index.html [NC,L]
+
+RewriteCond %{Request_URI} ^/(master).*
+RewriteRule ^(.*) /master/index.html [NC,L]

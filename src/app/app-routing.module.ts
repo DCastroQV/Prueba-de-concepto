@@ -4,8 +4,10 @@ import { HolaNundoComponent } from './hola-nundo/hola-nundo.component';
 import { InfoDesalComponent } from './info-desal/info-desal.component';
 
 const routes: Routes = [
-   { path: 'infodesaltest', component: InfoDesalComponent
-   }];
+   { path: 'infodesaltest', component: InfoDesalComponent},
+   { path: 'holamundo', component: HolaNundoComponent }
+];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
