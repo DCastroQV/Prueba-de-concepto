@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HolaNundoComponent } from './hola-nundo/hola-nundo.component';
 import { InfoDesalComponent } from './info-desal/info-desal.component';
+import { ConcursoComponent } from './concurso/concurso.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HolaNundoComponent,
-    InfoDesalComponent
+    InfoDesalComponent,
+    ConcursoComponent
   ],
   imports: [
     BrowserModule,
