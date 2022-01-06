@@ -6,7 +6,7 @@ import { ConfigModuleComponent } from './config-module/config-module.component';
 
 const routes: Routes = [
    { path: 'infodesaltest', component: InfoDesalComponent},
-   { path: 'holamundo', component: HolaNundoComponent },
+   { path: 'holamundo', component: HolaNundoComponent }
    { path: 'config', component: ConfigModuleComponent }
 ];
 
