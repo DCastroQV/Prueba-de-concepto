@@ -4,8 +4,8 @@ import { HolaNundoComponent } from './hola-nundo/hola-nundo.component';
 import { InfoDesalComponent } from './info-desal/info-desal.component';
 
 const routes: Routes = [
-   { path: 'infodesaltest', component: InfoDesalComponent},
-   { path: 'holamundo', component: HolaNundoComponent }
+    { path: '', component: HolaNundoComponent },
+    { path: 'infodesaltest', component: InfoDesalComponent},
 ];
 
 
