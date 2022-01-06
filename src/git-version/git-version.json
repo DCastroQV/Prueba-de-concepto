@@ -1,9 +1,11 @@
 {
   "dirty": true,
-  "raw": "v1.0.0-stg-0-g537f4fb-dirty",
+
+  "raw": "v1.3.0-stg+RQ03-17-g537f4fb-dirty",
   "hash": "g537f4fb",
-  "distance": 0,
-  "tag": "v1.0.0-stg",
+  "distance": 17,
+  "tag": "v1.3.0-stg+RQ03",
+
   "semver": {
     "options": {
       "loose": false,
@@ -20,6 +22,8 @@
     "build": [],
     "version": "1.0.0-stg"
   },
-  "suffix": "0-g537f4fb-dirty",
-  "semverString": "1.0.0-stg+0.g537f4fb.dirty"
+
+  "suffix": "17-g537f4fb-dirty",
+  "semverString": "1.3.0-stg+17.g537f4fb.dirty"
+
 }
