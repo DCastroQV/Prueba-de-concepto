@@ -5,9 +5,9 @@ import { InfoDesalComponent } from './info-desal/info-desal.component';
 import { ConfigModuleComponent } from './config-module/config-module.component';
 
 const routes: Routes = [
-    { path: '', component: HolaNundoComponent },
-    { path: 'infodesaltest', component: InfoDesalComponent},
-    { path: 'config', component: ConfigModuleComponent }
+   { path: 'infodesaltest', component: InfoDesalComponent},
+   { path: 'holamundo', component: HolaNundoComponent }
+   { path: 'config', component: ConfigModuleComponent }
 ];
 
 
