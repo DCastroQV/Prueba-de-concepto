@@ -1,0 +1,18 @@
+    <div id="container">
+        <form>
+            <!-- Username -->
+            <label for="name">Username:</label>
+            <input type="name">
+            <!-- Password -->
+            <br>
+			<label for="username">Password:</label>
+			<input type="password">
+			<p><a href="#">Forgot your password?</a>
+            <div id="lower">
+                <input type="checkbox"><label class="check" for="checkbox">Keep me logged in</label>
+                <!-- Submit Button -->
+				<br>
+                <input type="submit" value="Login">
+            </div>
+        </form>       
+    </div>
