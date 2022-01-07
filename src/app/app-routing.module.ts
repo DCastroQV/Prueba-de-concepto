@@ -6,9 +6,10 @@ import { ConcursoComponent } from './concurso/concurso.component';
 
 const routes: Routes = [
    { path: 'infodesaltest', component: InfoDesalComponent},
+   { path: 'holamundo', component: HolaNundoComponent },
    { path: 'concurso', component: ConcursoComponent},
    { path: '', component: HolaNundoComponent },
-  { path: 'config', component: ConfigModuleComponent }
+
 ];
 
 
