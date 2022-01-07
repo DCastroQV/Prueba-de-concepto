@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HolaNundoComponent } from './hola-nundo/hola-nundo.component';
 import { InfoDesalComponent } from './info-desal/info-desal.component';
 import { ConcursoComponent } from './concurso/concurso.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,10 @@ import { ConcursoComponent } from './concurso/concurso.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
