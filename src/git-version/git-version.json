@@ -1,28 +1,25 @@
 {
   "dirty": true,
-  "raw": "v1.3.0-stg+RQ03-9-g58362f2-dirty",
-  "hash": "g58362f2",
-  "distance": 9,
-  "tag": "v1.3.0-stg+RQ03",
+  "raw": "v1.2.0-stg-0-g90c64de-dirty",
+  "hash": "g90c64de",
+  "distance": 0,
+  "tag": "v1.2.0-stg",
   "semver": {
     "options": {
       "loose": false,
       "includePrerelease": false
     },
     "loose": false,
-    "raw": "v1.3.0-stg+RQ03",
+    "raw": "v1.2.0-stg",
     "major": 1,
-    "minor": 3,
+    "minor": 2,
     "patch": 0,
     "prerelease": [
       "stg"
     ],
-    "build": [
-      "RQ03"
-    ],
-    "version": "1.3.0-stg"
+    "build": [],
+    "version": "1.2.0-stg"
   },
-
-  "suffix": "9-g58362f2",
-  "semverString": "1.3.0-stg+9.g58362f2"
+  "suffix": "0-g90c64de-dirty",
+  "semverString": "1.2.0-stg+0.g90c64de.dirty"
 }
