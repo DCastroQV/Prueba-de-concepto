@@ -5,3 +5,4 @@ Verifique e indique que cumple con los siguientes ítems para realizar el cambio
 - [ ] Estableció el impacto del cambio en caso de un posible error.
 - [ ] Relacionó la cantidad de objetos modificados.
 - [ ] Definió el plan de reverso y a quien se debe notificar el cambio.
+- [ ] Es necesario la verificación de un especialista en seguridad, db etc.
