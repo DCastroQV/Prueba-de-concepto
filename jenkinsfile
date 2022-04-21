@@ -27,14 +27,14 @@ pipeline {
                 label 'Linux'
             }
             when {
-                expression { BRANCH_NAME ==~ /(master|stage|REL-CL\d-.*)/ }
+                expression { BRANCH_NAME ==~ /(master|stage|develop }
             }
             steps {
                 script{
                     def buildFolder; 
                     if ("master" in BRANCH_NAME || "stage" in BRANCH_NAME){
                         buildFolder = BRANCH_NAME;
-                    } else if (BRANCH_NAME.contains("CL1")) {
+                    } else if ("develop" in BRANCH_NAME) {
                         buildFolder = "CL1";
                     }else if (BRANCH_NAME.contains("CL2")) {
                         buildFolder = "CL2";
