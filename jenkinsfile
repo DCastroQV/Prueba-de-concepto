@@ -28,6 +28,7 @@ pipeline {
             }
             when {
                 expression { BRANCH_NAME ==~ /(master|stage|develop)/ }
+
             }
             steps {
                 script{
