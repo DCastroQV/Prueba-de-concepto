@@ -27,7 +27,8 @@ pipeline {
                 label 'Linux'
             }
             when {
-                expression { BRANCH_NAME ==~ /(master|stage|develop }
+                expression { BRANCH_NAME ==~ /(master|stage|develop)/ }
+
             }
             steps {
                 script{
