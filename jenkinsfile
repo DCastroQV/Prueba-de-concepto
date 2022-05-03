@@ -27,8 +27,7 @@ pipeline {
                 label 'Linux'
             }
             when {
-                expression { BRANCH_NAME ==~ /(master|stage|develop)/ }
-
+                expression { BRANCH_NAME ==~ /(master|develop|relesae-*)/ }
             }
             steps {
                 script{
@@ -39,7 +38,7 @@ pipeline {
                         buildFolder = "CL1";
                     }else if (BRANCH_NAME.contains("CL2")) {
                         buildFolder = "CL2";
-                    } else if (BRANCH_NAME.contains("CL3")) {
+                    } else if (BRANCH_NAME.contains("relesae-")) {
                         buildFolder = "CL3";
                     }
 
