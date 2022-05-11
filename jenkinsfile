@@ -1,10 +1,26 @@
+def buildFolder = "";
+def linuxAgentPath = "";
+def currentStage = "";
+
 pipeline {
     agent any
     stages {
+        stage('Set Variables') {
+            steps {
+                script{
+                    echo "Set Variables"
+                    currentStage = 'Set Variables'
+
+                    commit = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+                    channelName = "demo-versionamiento"
+                }
+            }
+        }
         stage('test') {
             steps {
                 script{
                     echo "Stage Test"
+                    currentStage = 'test'
                 }
             }
         }
@@ -12,6 +28,7 @@ pipeline {
             steps {
                 script{
                     echo "Stage SonarQube analysis"
+                    currentStage = 'SonarQube analysis'
                 }
             }
         }
@@ -19,53 +36,128 @@ pipeline {
             steps {
                 script{
                     echo "Stage Quality gate"
+                    currentStage = 'Quality gate'
+                }
+            }
+        }
+        stage ("Aprobación GC"){
+            when {
+                 anyOf {
+                    tag "release-*"
+                    tag "v*"
+                } 
+            }
+            steps{
+                script{
+                    try {
+
+                        if (BRANCH_NAME ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/){
+                            environment = "Pruebas";
+                        }else if (BRANCH_NAME ==~ /^v\d*\.\d*\.\d*\.\d*/){
+                            environment = "Produccion";
+                        }else{
+                            environment = "Indefinido";
+                        }
+
+                        timeout(time: 24, unit: 'HOURS'){
+                            input(message: "Se va a desplegar ${BRANCH_NAME} en *${environment}*:\n\nCommit:\n${commit}")
+                        }
+
+                        slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#90FF33', message: "Se aprueba despliegue de ${BRANCH_NAME}";
+                    }
+                    catch(err){
+                        echo err;
+                    }
                 }
             }
         }
         stage('build and Deploy') {
             agent {
-                label 'Linux'
+                label 'docker'
             }
             when {
-                expression { BRANCH_NAME ==~ /(master|develop|release-*)/ }
+                anyOf {
+                    branch 'develop'
+                    tag "release-*"
+                    tag "v*"
+                }
             }
             steps {
-                script{
-                    def buildFolder; 
-                    if ("master" in BRANCH_NAME || "stage" in BRANCH_NAME){
-                        buildFolder = BRANCH_NAME;
-                    } else if ("develop" in BRANCH_NAME) {
+                script {
+                    currentStage = 'Quality gate'
+                    
+                    if (BRANCH_NAME == "develop"){
                         buildFolder = "CL1";
-                    }else if (BRANCH_NAME.contains("CL2")) {
-                        buildFolder = "CL2";
-                    } else if (BRANCH_NAME.contains("release-")) {
-                        buildFolder = "CL3";
+                    }else if (BRANCH_NAME ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/){
+                        buildFolder = "stage";
+                    }else if (BRANCH_NAME ==~ /^v\d*\.\d*\.\d*\.\d*/){
+                        buildFolder = "master";
                     }
+
+                    linuxAgentPath = "/home/birc/jenkins_node2/workspace/prueba_concepto/" + buildFolder
 
                     sh """
                         docker run --rm -v \$(pwd):/app -w /app node:17 npm install
                         docker run --rm -v \$(pwd):/app -w /app node:17 npm run-script build
                         
-                        cp -rf  dist/app-qv-devops/* ../prueba_concepto/$buildFolder
-                        cp .htaccess ../prueba_concepto/$buildFolder
+                        cp .htaccess dist/app-qv-devops/
+                        
+                        cd dist/app-qv-devops/
+                 
+                        zip -r app_poc_wf.zip .
                     """
-                    // stash includes: 'dist/app-qv-devops/*', name: 'app'
+                    
+                }
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: "user_ssh_server_poc", keyFileVariable: 'sshKey', usernameVariable: 'username')
+                ]){
+                    sh """
+
+                        ssh -o "StrictHostKeyChecking=no" -i $sshKey $username@190.85.106.202 'rm -rf $linuxAgentPath/*'
+                        
+                        scp -o "StrictHostKeyChecking=no" -i $sshKey dist/app-qv-devops/app_poc_wf.zip $username@190.85.106.202:${linuxAgentPath}
+
+                        ssh -o "StrictHostKeyChecking=no" -i $sshKey $username@190.85.106.202 'unzip -o ${linuxAgentPath}/app_poc_wf.zip -d ${linuxAgentPath}'
+                        
+                        ssh -o "StrictHostKeyChecking=no" -i $sshKey $username@190.85.106.202 'rm ${linuxAgentPath}/app_poc_wf.zip'
+                    """
                 }
             }
         }
-        // stage('deploy') {
-        //     agent {
-        //         label 'Linux'
-        //     }
-        //     steps {
-        //         script{
-
-        //             sh"""
-        //                 ls
-        //             """
-                    
-        //         }
-        //     }
-        // }
+    }
+    post {  
+        always{
+            echo "Enviar logs...";
+        }       
+        success{
+            sh "echo success"
+            script{
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                    slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#90FF33',
+                    message: "La ejecución *${BUILD_DISPLAY_NAME}* del pipeline *${JOB_NAME}* finalizo con estado *SUCCESS*" +
+                    "\n *Commit:* \n ${commit}" +
+                    "\n *<${JOB_DISPLAY_URL}|Ver en Jenkins>*" + "\n" +
+                    "\n *<${GIT_URL}|Ir al repositorio>*";
+                }
+            }
+        }
+        unstable {
+            script{
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                    slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#FFA500', message: "El proyecto ${projectName} desplego en el ambiente ${BRANCH_NAME} \n finalizo con estado: unstable";
+                }
+            }
+        }
+        failure{
+            script{
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                    slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#FF4233', 
+                    message: "La ejecución *${BUILD_DISPLAY_NAME}* del pipeline *${JOB_NAME}* finalizo con estado *FAILURE* en el Stage *${currentStage}*" +
+                    "\n *Commit:* \n ${commit}" +
+                    "\n *<${JOB_DISPLAY_URL}|Ver en Jenkins>*" + "\n" +
+                    "\n *<${GIT_URL}|Ir al repositorio>*";
+                }
+            }
+        }  
     }
 }
