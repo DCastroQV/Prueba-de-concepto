@@ -6,6 +6,13 @@ pipeline {
     agent any
     stages {
         stage('Set Variables') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    tag "release-.*"
+                    tag "v.*"
+                }
+            }
             steps {
                 script{
                     echo "Set Variables"
