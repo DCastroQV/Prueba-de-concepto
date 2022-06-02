@@ -81,7 +81,7 @@ pipeline {
         stage('aprobacion on PR'){
             when {
                 anyOf {
-                    branch 'PR-*'
+                    branch 'PR-.*'
                 } 
             } 
             steps {
