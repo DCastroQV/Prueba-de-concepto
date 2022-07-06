@@ -46,7 +46,7 @@ pipeline {
             }
             when {
                 anyOf {
-                    branch 'develop'
+                    branch 'dev*'
                     tag "release-*"
                     tag "pre-*"
                     tag "v*"
