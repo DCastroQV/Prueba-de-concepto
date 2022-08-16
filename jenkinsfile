@@ -40,6 +40,22 @@ pipeline {
                 }
             }
         }
+        stage ("Aprobación GC"){
+            when { expression { BRANCH_NAME  ==~ /^v\d*\.\d*\.\d*\.\d*-release$/ } }
+            steps{
+                script{
+                    try {
+                        timeout(time: 24, unit: 'HOURS'){
+                        input(message: "Desea autorizar el despliegue?", 
+                            parameters: [ [$class: 'BooleanParameterDefinition', defaultValue:false, name: 'Aprobar'] ])
+                        }
+                    }
+                    catch(err){
+                        echo $err;
+                    }
+                }
+            }
+        }
         stage('build and Deploy') {
             agent {
                 label 'docker'
@@ -47,8 +63,8 @@ pipeline {
             when {
                 anyOf {
                     branch 'dev*'
-                    tag "release-*"
-                    tag "pre-*"
+                    tag "v*-release"
+                    tag "v*-pre"
                     tag "v*"
                 }
             }
@@ -58,9 +74,9 @@ pipeline {
 
                     if (BRANCH_NAME == "develop"){
                         buildFolder = "CL1";
-                    }else if (BRANCH_NAME ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/){
+                    }else if (BRANCH_NAME ==~ /^v\d*\.\d*\.\d*\.\d*-release$/){
                         buildFolder = "stage";
-                    }else if (BRANCH_NAME ==~ /^(pre-v)\d*\.\d*\.\d*\.\d*/){
+                    }else if (BRANCH_NAME ==~ /^v\d*\.\d*\.\d*\.\d*-pre$/){
                         buildFolder = "CL2";
                     }else if (BRANCH_NAME ==~ /^v\d*\.\d*\.\d*\.\d*/){
                         buildFolder = "master";
@@ -104,7 +120,7 @@ pipeline {
         success{
             sh "echo success"
             script{
-                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-release$/ || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-pre$/ ||"${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
                     slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#90FF33',
                     message: "La ejecución *${BUILD_DISPLAY_NAME}* del pipeline *${JOB_NAME}* finalizo con estado *SUCCESS*" +
                     "\n *Commit:* \n ${commit}" +
@@ -115,14 +131,14 @@ pipeline {
         }
         unstable {
             script{
-                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-release$/ || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-pre$/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
                     slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#FFA500', message: "El proyecto ${projectName} desplego en el ambiente ${BRANCH_NAME} \n finalizo con estado: unstable";
                 }
             }
         }
         failure{
             script{
-                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^(release-v)\d*\.\d*\.\d*\.\d*/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
+                if( "${BRANCH_NAME}" == "develop" || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-release$/ || "${BRANCH_NAME}" ==~ /^v\d*\.\d*\.\d*\.\d*-pre$/ || "${BRANCH_NAME}"  ==~ /^v\d*\.\d*\.\d*\.\d*/ ){
                     slackSend channel: channelName, teamDomain: 'SegurosBolivar', tokenCredentialId: 'jenkinsqa-slack-chanel', color: '#FF4233', 
                     message: "La ejecución *${BUILD_DISPLAY_NAME}* del pipeline *${JOB_NAME}* finalizo con estado *FAILURE* en el Stage *${currentStage}*" +
                     "\n *Commit:* \n ${commit}" +
