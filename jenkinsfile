@@ -56,6 +56,16 @@ pipeline {
                 }
             }
         }
+        stage('Notificacion Jira'){
+            agent {
+                label 'docker'
+            }
+            steps{
+                script{
+                    jiraIssueSelector(issueSelector: [$class: 'JqlIssueSelector', jql: 'project = "Demo - Optimización Proceso de Control de Versiones y Cambios" AND status="EN PROGRESO"'])
+                }
+            }
+        }
         stage('build and Deploy') {
             agent {
                 label 'docker'
@@ -112,6 +122,19 @@ pipeline {
                 }
             }
         }
+        stage('JIRA') {
+            steps {
+                script {
+                    def searchResults = jiraJqlSearch jql: "project = 'Demo - Optimización Proceso de Control de Versiones y Cambios' AND status = 'EN PROGRESO'", site: 'jira'
+                    def issues = searchResults.data.issues
+                    for (i = 0; i <issues.size(); i++) {
+                        def result = jiraGetIssue idOrKey: issues[i].key, site: 'jira'
+                    //def statuses = jiraGetProjectStatuses idOrKey: 'CVC', site: 'jira'
+                        jiraComment body: 'Despliegue Exitoso', issueKey: issues[i].key
+                    }
+                }
+            }
+        }
     }
     post {  
         always{
@@ -119,10 +142,6 @@ pipeline {
         }       
         success{
             sh "echo success"
-            script{
-                def issueKeys = [$class: 'JiraIssueUpdater', issueSelector: [$class: 'DefaultIssueSelector']]    
-                echo "${issueKeys}"
-            }
         }
         unstable {
             script{
